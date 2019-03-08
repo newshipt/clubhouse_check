@@ -35,7 +35,7 @@ main() {
 	echo $PR_BODY
 
 	# check if the branch path has a clubhouse card associated
-  if [[ ${PR_BODY} =~ (\[ch*(.+)\])([^,]*) ]]
+  if [[ ${PR_BODY} =~ ($BODY_FORMAT)) ]]
   then
 		echo "PR body is good."
 		exit 0
