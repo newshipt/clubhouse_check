@@ -12,5 +12,5 @@ RUN apk add --no-cache \
 	curl \
 	jq
 
-ADD check_for_clubhouse.sh /check_for_clubhouse.sh
-ENTRYPOINT ["./check_for_clubhouse.sh"]
+COPY check_for_clubhouse.sh.sh /usr/local/bin/check_for_clubhouse
+CMD ["check_for_clubhouse"]
