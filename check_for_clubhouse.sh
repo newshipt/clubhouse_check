@@ -29,7 +29,7 @@ main() {
 	PR_BODY=$(echo "$body" | jq --raw-output .body)
 	echo "Pull Request Body: ${PR_BODY}"
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
-	echo $body
+	echo "Pull Requests Commits: ${body}"
 
 	# check if the branch path has a clubhouse card associated
   if [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
