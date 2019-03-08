@@ -30,18 +30,23 @@ main() {
 	echo "Pull Request Body: ${PR_BODY}"
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
 	echo "Pull Requests Commits: ${body}"
+	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
 
 	# check if the branch path has a clubhouse card associated
-  if [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
-  then
-		echo "PR body is good."
+	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
+	then
+		echo "Commit messages contain a clubhouse card. You may proceed."
 		exit 0
 	elif [[ ${GITHUB_REF} =~ (\/ch*(.+)\/*)([^,]*) ]]
 	then
-		echo "Branch name is good."
+		echo "This branch was clearly created using the clubhouse helper."
+		exit 0
+	elif [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
+  then
+		echo "If I said your PR body looked good, would you hold it against me?"
 		exit 0
   else
-  	echo "Pull request body and branch name are not of the expected format."
+  	echo "yo dawg, where da clubhouse card at?"
     exit 1
   fi
 }
