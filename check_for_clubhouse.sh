@@ -27,15 +27,14 @@ main() {
 
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}")
 	PR_BODY=$(echo "$body" | jq --raw-output .body)
-	echo "Pull Request Body: ${PR_BODY}"
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
-	echo "Pull Requests Commits: ${body}"
 	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
+	echo $PR_COMMIT_MESSAGES
 
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
 	then
-		echo "Commit messages contain a clubhouse card. You may proceed."
+		echo "Commit messages contain a clubhouse card. You may proceed...this time."
 		exit 0
 	elif [[ ${GITHUB_REF} =~ (\/ch*(.+)\/*)([^,]*) ]]
 	then
