@@ -36,7 +36,7 @@ main() {
 	then
 		echo "Commit messages contain a clubhouse card. You may proceed...this time."
 		exit 0
-	elif [[ ${GITHUB_REF} =~ (\/ch*(.+)\/*)([^,]*) ]]
+	elif [[ ${GITHUB_REF} =~ (\/ch[0-9](.+)\/*)([^,]*) ]]
 	then
 		echo "This branch was clearly created using the clubhouse helper."
 		exit 0
