@@ -21,6 +21,11 @@ add_clubhouse_label() {
 	curl --data '{"labels": ["NEEDS CLUBHOUSE CARD"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
+remove_labels(){
+	curl --data '{"labels": []}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+
+}
+
 main() {
 	printenv
 	cat $GITHUB_EVENT_PATH
@@ -39,14 +44,17 @@ main() {
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
 	then
 		echo "Commit messages contain a clubhouse card. You may proceed...this time."
+		remove_labels
 		exit 0
 	elif [[ ${GITHUB_REF} =~ (\/ch[0-9](.+)\/*)([^,]*) ]]
 	then
 		echo "This branch was clearly created using the clubhouse helper."
+		remove_labels
 		exit 0
 	elif [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
   then
 		echo "If I said your PR body looked good, would you hold it against me?"
+		remove_labels
 		exit 0
   else
   	echo "yo dawg, where da clubhouse card at?"
