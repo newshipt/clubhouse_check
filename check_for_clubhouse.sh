@@ -18,7 +18,7 @@ API_HEADER="Accept: application/vnd.github.${API_VERSION}+json; application/vnd.
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 add_clubhouse_label() {
-	curl --data '{"labels": ["needs clubhouse card"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+	curl --data '{"labels": ["NEEDS CLUBHOUSE CARD"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
 main() {
