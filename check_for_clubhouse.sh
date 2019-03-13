@@ -17,9 +17,14 @@ API_VERSION=v3
 API_HEADER="Accept: application/vnd.github.${API_VERSION}+json; application/vnd.github.antiope-preview+json"
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
+add_clubhouse_label() {
+	curl --data '{"labels": ["NEEDS CLUBHOUSE CARD"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+}
+
 main() {
 	printenv
 	cat $GITHUB_EVENT_PATH
+
 	# Get the pull request number.
 	NUMBER=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
 
@@ -29,7 +34,6 @@ main() {
 	PR_BODY=$(echo "$body" | jq --raw-output .body)
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
 	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
-	echo $PR_COMMIT_MESSAGES
 
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
@@ -46,6 +50,7 @@ main() {
 		exit 0
   else
   	echo "yo dawg, where da clubhouse card at?"
+		add_clubhouse_label
     exit 1
   fi
 }
