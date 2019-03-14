@@ -25,12 +25,13 @@ add_clubhouse_label() {
 
 remove_clubhouse_labels(){
 	echo "Removing labels"
-	#LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
-	#LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
+	LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
+	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
 	# the below two lines removes orphaned quotes from the string. it's an ugly, temporary solution
-	#LABELS=${LABELS[@]/'"", '}
-	#LABELS=${LABELS[@]/', ""'}
-	LABELS='{ "labels": [ "bug" ] }'
+	LABELS=${LABELS[@]/'"", '}
+	LABELS=${LABELS[@]/', ""'}
+	LABELS=${LABELS[@]/', ""'}
+	LABELS=${LABELS[@]/' "" '}
 	echo $LABELS
 	curl --data "${LABELS}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
