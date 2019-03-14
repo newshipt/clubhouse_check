@@ -19,14 +19,15 @@ AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 add_clubhouse_label() {
 	echo "Adding labels"
-	LABELS=$(cat $GITHUB_EVENT_PATH | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '[ .pull_request.labels[].name ]')
-	curl --data "{'\"'labels'\"': '\"'${LABELS}'\"'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+	LABELS=$(cat $GITHUB_EVENT_PATH | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '{ "labels": [ .pull_request.labels[].name ] }')
+	curl --data "${LABELS}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
 remove_clubhouse_labels(){
 	echo "Removing labels"
-	LABELS=$(cat $GITHUB_EVENT_PATH | jq '[ .pull_request.labels[].name ]')
+	LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
+	# the below two lines removes orphaned quotes from the string. it's an ugly, temporary solution
 	LABELS=${LABELS[@]/'"", '}
 	LABELS=${LABELS[@]/', ""'}
 	echo $LABELS
