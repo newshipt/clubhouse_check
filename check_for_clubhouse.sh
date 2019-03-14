@@ -49,8 +49,6 @@ main() {
 	PR_BODY=$(echo "$body" | jq --raw-output .body)
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
 	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
-	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}")
-	echo $body
 
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
