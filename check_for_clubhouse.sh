@@ -31,7 +31,7 @@ remove_clubhouse_labels(){
 	LABELS=${LABELS[@]/'"", '}
 	LABELS=${LABELS[@]/', ""'}
 	echo $LABELS
-	curl --data '{"labels":["bug"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+	curl --data '{ "labels": [ "bug", "enhancement" ] }' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
 main() {
