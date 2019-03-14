@@ -29,6 +29,7 @@ remove_clubhouse_labels(){
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
 	LABELS=${LABELS[@]/'"", '}
 	LABELS=${LABELS[@]/', ""'}
+	echo $LABELS
 	curl --data "{'labels': '${LABELS}'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
