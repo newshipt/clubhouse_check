@@ -18,12 +18,20 @@ API_HEADER="Accept: application/vnd.github.${API_VERSION}+json; application/vnd.
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 add_clubhouse_label() {
-	curl --data '{"labels": ["NEEDS CLUBHOUSE CARD"]}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+	get_labels
+	body=$(echo $body | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }')
+	curl --data "{'labels': '${LABELS}'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
-remove_labels(){
-	curl --data '{"labels": []}' -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+remove_clubhouse_labels(){
+	get_labels
+	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
+	curl --data "{'labels': '${LABELS}'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+}
 
+get_labels(){
+	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}")
+	LABELS=$(echo $body | jq '[ .pull_request.labels[].name ]')
 }
 
 main() {
@@ -44,17 +52,17 @@ main() {
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
 	then
 		echo "Commit messages contain a clubhouse card. You may proceed...this time."
-		remove_labels
+		remove_clubhouse_labels
 		exit 0
 	elif [[ ${GITHUB_REF} =~ (\/ch[0-9](.+)\/*)([^,]*) ]]
 	then
 		echo "This branch was clearly created using the clubhouse helper."
-		remove_labels
+		remove_clubhouse_labels
 		exit 0
 	elif [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
   then
 		echo "If I said your PR body looked good, would you hold it against me?"
-		remove_labels
+		remove_clubhouse_labels
 		exit 0
   else
   	echo "yo dawg, where da clubhouse card at?"
