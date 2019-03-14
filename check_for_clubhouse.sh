@@ -18,20 +18,16 @@ API_HEADER="Accept: application/vnd.github.${API_VERSION}+json; application/vnd.
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 add_clubhouse_label() {
-	get_labels
-	body=$(echo $body | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }')
+	echo "Adding labels"
+	LABELS=$(echo $body | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '[ .pull_request.labels[].name ]')
 	curl --data "{'labels': '${LABELS}'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
 remove_clubhouse_labels(){
-	get_labels
+	echo "Removing labels"
+	LABELS=$(echo $body | jq '[ .pull_request.labels[].name ]')
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
 	curl --data "{'labels': '${LABELS}'}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
-}
-
-get_labels(){
-	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}")
-	LABELS=$(echo $body | jq '[ .pull_request.labels[].name ]')
 }
 
 main() {
