@@ -47,8 +47,17 @@ main() {
 
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}")
 	PR_BODY=$(echo "$body" | jq --raw-output .body)
+	PR_BASE=$(echo "$body" | jq --raw-output .base.ref)
+	PR_HEAD=$(echo "$body" | jq --raw-output .head.ref)
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
 	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
+
+	# don't check for a card if we are merging dev to master
+	if [[ ${PR_BASE} == "master" && ${PR_HEAD} == "development" ]]
+	then
+		remove_clubhouse_labels
+		exit 0
+	fi
 
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
