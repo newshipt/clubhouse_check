@@ -58,7 +58,7 @@ main() {
 		remove_clubhouse_labels
 		exit 0
 	fi
-	
+
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
 	then
@@ -73,6 +73,11 @@ main() {
 	elif [[ ${PR_BODY} =~ (\[ch[0-9](.+)\])([^,]*) ]]
   then
 		echo "If I said your PR body looked good, would you hold it against me?"
+		remove_clubhouse_labels
+		exit 0
+	elif [[ ${PR_BODY} =~ \(https:\/\/app\.clubhouse\.io\/shipt\/story\/[0-9]*\/.*\) ]]
+	then
+		echo "Thanks for using the admin PR template."
 		remove_clubhouse_labels
 		exit 0
   else
