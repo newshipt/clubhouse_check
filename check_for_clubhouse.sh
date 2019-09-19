@@ -41,7 +41,7 @@ main() {
 	cat $GITHUB_EVENT_PATH
 
 	# Get the pull request number.
-	NUMBER=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
+	NUMBER=$(jq --raw-output check_suite.pull_requests.number "$GITHUB_EVENT_PATH")
 
 	echo "running $GITHUB_ACTION for PR #${NUMBER}"
 
@@ -50,7 +50,6 @@ main() {
 	PR_BASE=$(echo "$body" | jq --raw-output .base.ref)
 	PR_HEAD=$(echo "$body" | jq --raw-output .head.ref)
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/commits")
-	echo "$body"
 	PR_COMMIT_MESSAGES=$(echo "$body" | jq -r .[].commit.message)
 
 	# don't check for a card if we are merging dev to master
