@@ -21,8 +21,14 @@ add_clubhouse_label() {
 	echo "Adding labels"
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels")
 
-	# LABELS= { "labels": "NEEDS CLUBHOUSE CARD" }
-	curl --data "{ "labels": "NEEDS CLUBHOUSE CARD" }" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
+	# LABELS=$(echo $body | jq '.pull_request.labels[.pull_request.labels| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '{ "labels": [ .pull_request.labels[].name ] }')
+	LABELS["labels"] = echo "$body" | jq .[].name
+  LABELS["labels"]+=("NEEDS CLUBHOUSE CARD")
+	for k in "${!LABELS[@]}"
+  do
+    printf "%s\n" "$k=${LABELS[$k]}"
+  done
+	curl --data "${LABELS}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
 remove_clubhouse_labels(){
