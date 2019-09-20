@@ -26,8 +26,7 @@ add_clubhouse_label() {
 remove_clubhouse_labels(){
 	echo "Removing labels"
 	LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
-	${arr[@]}
-	if [[ ${LABELS[@]} == null ]]; then
+	if [[ LABELS == null ]]; then
 		exit 0
 	fi
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
