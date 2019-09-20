@@ -20,8 +20,8 @@ AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 add_clubhouse_label() {
 	echo "Adding labels"
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels")
-	
-	LABELS=$(echo $body | jq '.[]| length] |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '{ "labels": [ .[].name ] }')
+
+	LABELS=$(echo $body | jq '.[].name |= . + { "name": "NEEDS CLUBHOUSE CARD" }' | jq '{ "labels": [ .[].name ] }')
 	curl --data "${LABELS}" -X PATCH -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}"
 }
 
