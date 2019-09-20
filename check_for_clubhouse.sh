@@ -26,6 +26,7 @@ add_clubhouse_label() {
 remove_clubhouse_labels(){
 	echo "Removing labels"
 	LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
+	echo "LABELS > $LABELS"
 	if [[ $LABELS == null ]]; then
 		exit 0
 	fi
