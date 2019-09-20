@@ -41,7 +41,7 @@ main() {
 	cat $GITHUB_EVENT_PATH
 
 	# Get the pull request number.
-	NUMBER=$(jq --raw-output .check_suite.pull_requests.number "$GITHUB_EVENT_PATH")
+	NUMBER=$(jq --raw-output .check_suite.pull_requests.[].number "$GITHUB_EVENT_PATH")
 
 	echo "running $GITHUB_ACTION for PR #${NUMBER}"
 
