@@ -27,7 +27,7 @@ remove_clubhouse_labels(){
 	echo "Removing labels"
 
 	body=$(curl -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" "${URI}/repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels")
-	LABELS=$(cat "$body" | jq '{ "labels": [ .[].name ] }')
+	LABELS=$(echo "$body" | jq '{ "labels": [ .[].name ] }')
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
 	# the below two lines removes orphaned quotes from the string. it's an ugly, temporary solution
 	LABELS=${LABELS[@]/'"", '}
