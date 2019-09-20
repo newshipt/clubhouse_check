@@ -59,6 +59,11 @@ main() {
 		exit 0
 	fi
 
+	echo "PR_COMMIT_MESSAGES > $PR_COMMIT_MESSAGES"
+	echo "GITHUB_REF > $GITHUB_REF"
+	echo "PR_BODY > $PR_BODY"
+
+
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
 	then
