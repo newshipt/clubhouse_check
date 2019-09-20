@@ -65,7 +65,7 @@ main() {
 		echo "Commit messages contain a clubhouse card. You may proceed...this time."
 		remove_clubhouse_labels
 		exit 0
-	elif [[ ${GITHUB_REF} =~ (\/ch[0-9](.+)\/*)([^,]*) ]]
+	elif [[ ${GITHUB_REF} =~ (\/ch[0-9](.+)\/*)([^,]*) ]] || [[ ${PR_HEAD} =~ (\/ch[0-9](.+)\/*)([^,]*) ]]
 	then
 		echo "This branch was clearly created using the clubhouse helper."
 		remove_clubhouse_labels
