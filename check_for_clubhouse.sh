@@ -25,6 +25,10 @@ add_clubhouse_label() {
 
 remove_clubhouse_labels(){
 	echo "Removing labels"
+	if [[ jq -r .pull_requests.labels[].name "$GITHUB_EVENT_PATH" == null]]
+	then
+		exit 0
+	fi
 	LABELS=$(cat $GITHUB_EVENT_PATH | jq '{ "labels": [ .pull_request.labels[].name ] }')
 	LABELS=${LABELS[@]/'NEEDS CLUBHOUSE CARD'}
 	# the below two lines removes orphaned quotes from the string. it's an ugly, temporary solution
@@ -58,11 +62,6 @@ main() {
 		remove_clubhouse_labels
 		exit 0
 	fi
-
-	echo "PR_COMMIT_MESSAGES > $PR_COMMIT_MESSAGES"
-	echo "GITHUB_REF > $GITHUB_REF"
-	echo "PR_BODY > $PR_BODY"
-
 
 	# check if the branch path has a clubhouse card associated
 	if [[ ${PR_COMMIT_MESSAGES} =~ (\[ch[0-9](.+)\])([^,]*) ]]
